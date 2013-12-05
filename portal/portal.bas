@@ -27,31 +27,21 @@
  rem helps move the player
  dim p1_x = a
  dim p1_fall = f
+ dim p1_dir = q
+
+ rem see which way missile0 is heading
+ dim m0_dir = o
+
+ rem see which way missile1 is heading
+ dim m1_dir = p
 
  rem see which way the player is facing
  dim p1_left = d
  dim p1_right = d
- dim p1_steady = d
- dim p1_up = d
- dim p1_down = d
 
  rem see which missile was shot
  dim m0_shot = m
  dim m1_shot = m
-
- rem see which way missile0 is heading
- dim m0_left = i
- dim m0_right = i
- dim m0_steady = i
- dim m0_up = i
- dim m0_down = i
-
- rem see which way missile1 is heading
- dim m1_left = j
- dim m1_right = j
- dim m1_steady = j
- dim m1_up = j
- dim m1_down = j
 
  rem see which missiles are accessible
  dim m0_persistence = b
@@ -59,22 +49,9 @@
 
  rem setup the initial variables
  player1x = 24 : player1y = 80
- p1_right{1}=1 : p1_steady{2}=1 : score = 1
+ p1_dir = 1 : p1_right{1}=1 : score = 1
  missile0height = 6 : missile1height = 6
- ballheight = 0
  const font = alarmclock
-
- rem the player's beginning sprite
- player1:
- %00110000
- %00110000
- %00110000
- %00110000
- %01111100
- %01110000
- %00110000
- %00110000
-end
 
  goto level_select
 
@@ -105,7 +82,7 @@ level2
  playfield:
  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
  XXXXXXXXXXXXX........XX........X
- XXXXXXXXXXXXX........XX........X
+ XXXXXXXXXXXXX........XX.........
  XXXXXXXXXXXXXXXX............XXXX
  X..............................X
  X..............................X
@@ -115,7 +92,7 @@ level2
  X..........XX..................X
  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 end
- ballx = 136 : bally = 20
+ ballx = 144 : bally = 20
  return
 
 mainloop
@@ -137,20 +114,20 @@ mainloop
  if !pfread(x, y) then player1y = player1y + 1
 
  rem see if missile1 has not collided and move it in the right direction
- if !collision(missile1,playfield) && m1_shot{1} && m1_left{0} && m1_steady{2} then missile1x = missile1x - 1
- if !collision(missile1,playfield) && m1_shot{1} && m1_left{0} && m1_up{3} then missile1x = missile1x - 1 : missile1y = missile1y - 1
- if !collision(missile1,playfield) && m1_shot{1} && m1_left{0} && m1_down{4} then missile1x = missile1x - 1 : missile1y = missile1y + 1
- if !collision(missile1,playfield) && m1_shot{1} && m1_right{1} && m1_steady{2} then missile1x = missile1x + 1
- if !collision(missile1,playfield) && m1_shot{1} && m1_right{1} && m1_up{3} then missile1x = missile1x + 1 : missile1y = missile1y - 1
- if !collision(missile1,playfield) && m1_shot{1} && m1_right{1} && m1_down{4} then missile1x = missile1x + 1 : missile1y = missile1y + 1
+ if !collision(missile1,playfield) && m1_shot{1} && m1_dir = 4 then missile1x = missile1x - 1
+ if !collision(missile1,playfield) && m1_shot{1} && m1_dir = 5 then missile1x = missile1x - 1 : missile1y = missile1y - 1
+ if !collision(missile1,playfield) && m1_shot{1} && m1_dir = 3 then missile1x = missile1x - 1 : missile1y = missile1y + 1
+ if !collision(missile1,playfield) && m1_shot{1} && m1_dir = 1 then missile1x = missile1x + 1
+ if !collision(missile1,playfield) && m1_shot{1} && m1_dir = 2 then missile1x = missile1x + 1 : missile1y = missile1y - 1
+ if !collision(missile1,playfield) && m1_shot{1} && m1_dir = 0 then missile1x = missile1x + 1 : missile1y = missile1y + 1
 
  rem see if missile0 has not collided and move it in the right direction
- if !collision(missile0,playfield) && m0_shot{0} && m0_left{0} && m0_steady{2} then missile0x = missile0x - 1
- if !collision(missile0,playfield) && m0_shot{0} && m0_left{0} && m0_up{3} then missile0x = missile0x - 1 : missile0y = missile0y - 1
- if !collision(missile0,playfield) && m0_shot{0} && m0_left{0} && m0_down{4} then missile0x = missile0x - 1 : missile0y = missile0y + 1
- if !collision(missile0,playfield) && m0_shot{0} && m0_right{1} && m0_steady{2} then missile0x = missile0x + 1
- if !collision(missile0,playfield) && m0_shot{0} && m0_right{1} && m0_up{3} then missile0x = missile0x + 1 : missile0y = missile0y - 1
- if !collision(missile0,playfield) && m0_shot{0} && m0_right{1} && m0_down{4} then missile0x = missile0x + 1 : missile0y = missile0y + 1
+ if !collision(missile0,playfield) && m0_shot{0} && m0_dir = 4 then missile0x = missile0x - 1
+ if !collision(missile0,playfield) && m0_shot{0} && m0_dir = 5 then missile0x = missile0x - 1 : missile0y = missile0y - 1
+ if !collision(missile0,playfield) && m0_shot{0} && m0_dir = 3 then missile0x = missile0x - 1 : missile0y = missile0y + 1
+ if !collision(missile0,playfield) && m0_shot{0} && m0_dir = 1 then missile0x = missile0x + 1
+ if !collision(missile0,playfield) && m0_shot{0} && m0_dir = 2 then missile0x = missile0x + 1 : missile0y = missile0y - 1
+ if !collision(missile0,playfield) && m0_shot{0} && m0_dir = 0 then missile0x = missile0x + 1 : missile0y = missile0y + 1
 
  rem check for portal collision and overwrite the initial portal with the new one
  if collision(missile0,missile1) && m0_shot{0} then missile1x = 255 : missile1y = 255 : m1_persistence{1}=0
@@ -172,20 +149,10 @@ mainloop
  player1x = player1x + p1_x
 
  rem joystick commands which change the sprite
- if joy0up && p1_left{0} && p1_steady{2} && e = 0 then gosub player_lup : e = 1
- if joy0up && p1_left{0} && p1_down{4} && e = 0 then gosub player_left : e = 1
- if joy0up && p1_right{1} && p1_steady{2} && e = 0 then gosub player_rup : e = 1
- if joy0up && p1_right{1} && p1_down{4} && e = 0 then gosub player_right : e = 1
- if joy0down && p1_left{0} && p1_steady{2} && e = 0 then gosub player_ldown : e = 1
- if joy0down && p1_left{0} && p1_up{3} && e = 0 then gosub player_left : e = 1
- if joy0down && p1_right{1} && p1_steady{2} && e = 0 then gosub player_rdown : e = 1
- if joy0down && p1_right{1} && p1_up{3} && e = 0 then gosub player_right : e = 1
- if joy0left && p1_steady{2} then gosub player_left
- if joy0left && p1_up{3} then gosub player_lup
- if joy0left && p1_down{4} then gosub player_ldown
- if joy0right && p1_steady{2} then gosub player_right
- if joy0right && p1_up{3} then gosub player_rup
- if joy0right && p1_down{4} then gosub player_rdown
+ if joy0up && p1_dir < 5 && p1_dir <> 2 && e = 0 then p1_dir = p1_dir + 1 : e = 1
+ if joy0down && p1_dir > 0 && p1_dir <> 3 && e = 0 then p1_dir = p1_dir - 1 : e = 1
+ if joy0left && !p1_left{0} then p1_dir = p1_dir + 3 : p1_left{0}=1 : p1_right{1}=0
+ if joy0right && !p1_right{1} then p1_dir = p1_dir - 3 : p1_left{0}=0 : p1_right{1}=1
 
  rem fire the missiles
  if joy0fire then gosub player_fire1
@@ -198,6 +165,8 @@ mainloop
  rem change all this stuff if the level has been completed because the player collided with the ball
  if collision(player1,ball) then z = 1 : level = level + 1 : player1x = 24 : player1y = 80 : missile0x = 255 : missile0y = 255 : m0_persistence{0}=0 : missile1x = 240 : missile1y = 240 : m1_persistence{1}=0
 
+ on p1_dir gosub player_rdown player_right player_rup player_ldown player_left player_lup
+
  drawscreen
 
  rem player and playfield collision and gentle knockback
@@ -208,33 +177,28 @@ mainloop
 
  rem fire missile1 in the right direction
 player_fire1
- if p1_left{0} && p1_steady{2} then missile1x = player1x : missile1y = player1y - 1 : m1_left{0}=1 : m1_right{1}=0 : m1_steady{2}=1 : m1_up{3}=0 : m1_down{4}=0
- if p1_left{0} && p1_up{3} then missile1x = player1x : missile1y = player1y - 1 : m1_left{0}=1 : m1_right{1}=0 : m1_steady{2}=0 : m1_up{3}=1 : m1_down{4}=0
- if p1_left{0} && p1_down{4} then missile1x = player1x : missile1y = player1y - 1 : m1_left{0}=1 : m1_right{1}=0 : m1_steady{2}=0 : m1_up{3}=0 : m1_down{4}=1
- if p1_right{1} && p1_steady{2} then missile1x = player1x + 7 : missile1y = player1y - 1 : m1_left{0}=0 : m1_right{1}=1 : m1_steady{2}=1 : m1_up{3}=0 : m1_down{4}=0
- if p1_right{1} && p1_up{3} then missile1x = player1x + 7 : missile1y = player1y - 1 : m1_left{0}=0 : m1_right{1}=1 : m1_steady{2}=0 : m1_up{3}=1 : m1_down{4}=0
- if p1_right{1} && p1_down{4} then missile1x = player1x + 7 : missile1y = player1y - 1 : m1_left{0}=0 : m1_right{1}=1 : m1_steady{2}=0 : m1_up{3}=0 : m1_down{4}=1
+ if p1_dir = 4 then missile1x = player1x : missile1y = player1y - 1 : m1_dir = 4
+ if p1_dir = 5 then missile1x = player1x : missile1y = player1y - 1 : m1_dir = 5
+ if p1_dir = 3 then missile1x = player1x : missile1y = player1y - 1 : m1_dir = 3
+ if p1_dir = 1 then missile1x = player1x + 7 : missile1y = player1y - 1 : m1_dir = 1
+ if p1_dir = 2 then missile1x = player1x + 7 : missile1y = player1y - 1 : m1_dir = 2
+ if p1_dir = 0 then missile1x = player1x + 7 : missile1y = player1y - 1 : m1_dir = 0
  m1_shot{1} = 1
  return
 
  rem fire missile0 in the right direction
 player_fire0
- if p1_left{0} && p1_steady{2} then missile0x = player1x : missile0y = player1y - 1 : m0_left{0}=1 : m0_right{1}=0 : m0_steady{2}=1 : m0_up{3}=0 : m0_down{4}=0
- if p1_left{0} && p1_up{3} then missile0x = player1x : missile0y = player1y - 1 : m0_left{0}=1 : m0_right{1}=0 : m0_steady{2}=0 : m0_up{3}=1 : m0_down{4}=0
- if p1_left{0} && p1_down{4} then missile0x = player1x : missile0y = player1y - 1 : m0_left{0}=1 : m0_right{1}=0 : m0_steady{2}=0 : m0_up{3}=0 : m0_down{4}=1
- if p1_right{1} && p1_steady{2} then missile0x = player1x + 7 : missile0y = player1y - 1 : m0_left{0}=0 : m0_right{1}=1 : m0_steady{2}=1 : m0_up{3}=0 : m0_down{4}=0
- if p1_right{1} && p1_up{3} then missile0x = player1x + 7 : missile0y = player1y - 1 : m0_left{0}=0 : m0_right{1}=1 : m0_steady{2}=0 : m0_up{3}=1 : m0_down{4}=0
- if p1_right{1} && p1_down{4} then missile0x = player1x + 7 : missile0y = player1y - 1 : m0_left{0}=0 : m0_right{1}=1 : m0_steady{2}=0 : m0_up{3}=0 : m0_down{4}=1
+ if p1_dir = 4 then missile0x = player1x : missile0y = player1y - 1 : m0_dir = 4
+ if p1_dir = 5 then missile0x = player1x : missile0y = player1y - 1 : m0_dir = 5
+ if p1_dir = 3 then missile0x = player1x : missile0y = player1y - 1 : m0_dir = 3
+ if p1_dir = 1 then missile0x = player1x + 7 : missile0y = player1y - 1 : m0_dir = 1
+ if p1_dir = 2 then missile0x = player1x + 7 : missile0y = player1y - 1 : m0_dir = 2
+ if p1_dir = 0 then missile0x = player1x + 7 : missile0y = player1y - 1 : m0_dir = 0
  m0_shot{0} = 1
  return
 
  rem left and steady sprite
 player_left
- p1_left{0} = 1
- p1_right{1} = 0
- p1_steady{2} = 1
- p1_up{3} = 0 
- p1_down{4} = 0
  player1:
  %00011000
  %00011000
@@ -249,11 +213,6 @@ end
 
  rem right and steady sprite
 player_right
- p1_left{0} = 0 
- p1_right{1} = 1
- p1_steady{2} = 1
- p1_up{3} = 0
- p1_down{4} = 0
  player1:
  %00110000
  %00110000
@@ -268,11 +227,6 @@ end
  
  rem left and up sprite
 player_lup
- p1_left{0} = 1
- p1_right{1} = 0
- p1_steady{2} = 0
- p1_up{3} = 1
- p1_down{4} = 0
  player1:
  %00011000
  %00011000
@@ -287,11 +241,6 @@ end
 
  rem left and down sprite
 player_ldown
- p1_left{0} = 1
- p1_right{1} = 0
- p1_steady{2} = 0
- p1_up{3} = 0
- p1_down{4} = 1
  player1:
  %00011000
  %00011000
@@ -306,11 +255,6 @@ end
 
  rem right and up sprite
 player_rup
- p1_left{0} = 0
- p1_right{1} = 1
- p1_steady{2} = 0
- p1_up{3} = 1
- p1_down{4} = 0
  player1:
  %00110000
  %00110000
@@ -325,11 +269,6 @@ end
 
  rem right and down sprite
 player_rdown
- p1_left{0} = 0
- p1_right{1} = 1
- p1_steady{2} = 0
- p1_up{3} = 0
- p1_down{4} = 1
  player1:
  %00110000
  %00110000
@@ -350,24 +289,16 @@ knock_player_back
  rem change where the player spawns once she goes through a portal
  rem this determines where she will spawn in relation to missile0 after going through missile1
 player_pos0
- if m0_left{0} && m0_steady{2} then player1x = missile0x - 1 : player1y = missile0y
- if m0_left{0} && m0_up{3} then player1x = missile0x - 1 : player1y = missile0y + 4
- if m0_left{0} && m0_down{4} then player1x = missile0x - 1 : player1y = missile0y
- if m0_right{1} && m0_steady{2} then player1x = missile0x - 8 : player1y = missile0y
- if m0_right{1} && m0_up{3} then player1x = missile0x - 8 : player1y = missile0y + 4
- if m0_right{1} && m0_down{4} then player1x = missile0x - 8 : player1y = missile0y
+ if m0_dir = 4 || m0_dir = 3 then player1x = missile0x - 1 : player1y = missile0y
+ if m0_dir = 5 then player1x = missile0x - 1 : player1y = missile0y + 4
+ if m0_dir = 1 || m0_dir = 0 then player1x = missile0x - 8 : player1y = missile0y
+ if m0_dir = 2 then player1x = missile0x - 8 : player1y = missile0y + 4
  return
 
  rem this determines where she will spawn in relation to missile1 after going through missile 0
 player_pos1
- if m1_left{0} && m1_steady{2} then player1x = missile1x - 1: player1y = missile1y
- if m1_left{0} && m1_up{3} then player1x = missile1x - 1 : player1y = missile1y + 4
- if m1_left{0} && m1_down{4} then player1x = missile1x - 1 : player1y = missile1y
- if m1_right{1} && m1_steady{2} then player1x = missile1x - 8 : player1y = missile1y
- if m1_right{1} && m1_up{3} then player1x = missile1x - 8 : player1y = missile1y + 4
- if m1_right{1} && m1_down{4} then player1x = missile1x - 8 : player1y = missile1y
+ if m1_dir = 4 || m1_dir = 3 then player1x = missile1x - 1: player1y = missile1y
+ if m1_dir = 5 then player1x = missile1x - 1 : player1y = missile1y + 4
+ if m1_dir = 1 || m1_dir = 0 then player1x = missile1x - 8 : player1y = missile1y
+ if m1_dir = 2 then player1x = missile1x - 8 : player1y = missile1y + 4
  return
-
-
-
-
