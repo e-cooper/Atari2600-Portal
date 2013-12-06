@@ -108,7 +108,6 @@ level2
  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 end
  ballx = 144 : bally = 75
- rem if z = 1 then score = 1
  return
 
 level3
@@ -126,7 +125,6 @@ level3
  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 end
  ballx = 19 : bally = 19
- rem if z = 1 then score = 2
  return
 
 level4
@@ -144,7 +142,6 @@ level4
  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 end
  ballx = 144 : bally = 19
- rem if z = 1 then score = 3
  return
 
 level5
